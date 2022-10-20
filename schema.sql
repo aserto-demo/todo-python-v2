@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS todos (
+    ID TEXT PRIMARY KEY,
+    Title TEXT NOT NULL,
+    Completed BOOLEAN NOT NULL,
+    OwnerID TEXT NOT NULL
+);
