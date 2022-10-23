@@ -1,7 +1,7 @@
 from flask import Flask, g, jsonify, request
 from flask_cors import CORS
 
-#  from .directory import resolve_identity, resolve_user
+from .directory import user_from_identity
 from .db import list_todos, insert_todo, update_todo, delete_todo
 from flask_aserto import AsertoMiddleware, AuthorizationError
 from .aserto_options import load_aserto_options_from_environment
@@ -65,10 +65,9 @@ def remove_todo(ownerID):
 @app.route("/user/<userID>", methods=["GET"])
 @aserto.authorize
 def get_user(userID):
-    #  user_id = resolve_identity(userID)
-    #  user = resolve_user(user_id)
-    #  return jsonify(user)
-    return jsonify({})
+    user= user_from_identity(userID)
+    app.logger.warning("user: %s", user)
+    return jsonify(user)
 
 
 @app.teardown_appcontext

@@ -10,7 +10,9 @@ python-dotenv = "*"
 requests = "*"
 aserto-idp = "*"
 typing-extensions = "*"
-flask-aserto = "0.5.0.rc2"
+flask-aserto = "~=0.20.0"
+aserto-directory = "*"
+grpcio = "*"
 
 [dev-packages]
 black = "*"
