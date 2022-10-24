@@ -4,7 +4,7 @@ from flask_cors import CORS
 from .directory import user_from_identity
 from .db import list_todos, insert_todo, update_todo, delete_todo
 from flask_aserto import AsertoMiddleware, AuthorizationError
-from .aserto_options import load_aserto_options_from_environment
+from .options import load_options_from_environment
 
 from dotenv import load_dotenv
 
@@ -14,7 +14,7 @@ app = Flask(__name__)
 
 CORS(app, headers=["Content-Type", "Authorization"])
 
-aserto_options = load_aserto_options_from_environment()
+aserto_options = load_options_from_environment()
 aserto = AsertoMiddleware(**aserto_options)
 
 
@@ -66,7 +66,6 @@ def remove_todo(ownerID):
 @aserto.authorize
 def get_user(userID):
     user= user_from_identity(userID)
-    app.logger.warning("user: %s", user)
     return jsonify(user)
 
 
