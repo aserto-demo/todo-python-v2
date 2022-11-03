@@ -26,7 +26,7 @@ def load_options_from_environment() -> AsertoMiddlewareOptions:
 
 
     authorizer_service_url = os.getenv(
-        "AUTHORIZER_SERVICE_URL", DEFAULT_AUTHORIZER_URL
+        "ASERTO_AUTHORIZER_SERVICE_URL", DEFAULT_AUTHORIZER_URL
     )
 
     policy_path_root = os.getenv("POLICY_ROOT", "")
