@@ -33,7 +33,7 @@ def load_options_from_environment() -> AsertoMiddlewareOptions:
     if not policy_path_root:
         missing_variables.append("POLICY_ROOT")
 
-    cert_file_path = os.path.expandvars(os.getenv("AUTHORIZER_CERT_PATH", ""))
+    cert_file_path = os.path.expandvars(os.getenv("AUTHORIZER_CERT_PATH", "")) or None
 
     oidc_issuer = os.getenv("OIDC_ISSUER", "")
     if not oidc_issuer:
