@@ -29,19 +29,19 @@ def load_options_from_environment() -> AsertoMiddlewareOptions:
         "ASERTO_AUTHORIZER_SERVICE_URL", DEFAULT_AUTHORIZER_URL
     )
 
-    policy_path_root = os.getenv("POLICY_ROOT", "")
+    policy_path_root = os.getenv("ASERTO_POLICY_ROOT", "")
     if not policy_path_root:
-        missing_variables.append("POLICY_ROOT")
+        missing_variables.append("ASERTO_POLICY_ROOT")
 
     cert_file_path = os.path.expandvars(os.getenv("AUTHORIZER_CERT_PATH", "")) or None
 
-    oidc_issuer = os.getenv("OIDC_ISSUER", "")
+    oidc_issuer = os.getenv("ISSUER", "")
     if not oidc_issuer:
-        missing_variables.append("OIDC_ISSUER")
+        missing_variables.append("ISSUER")
 
-    oidc_client_id = os.getenv("OIDC_CLIENT_ID", "")
+    oidc_client_id = os.getenv("AUDIENCE", "")
     if not oidc_client_id:
-        missing_variables.append("OIDC_CLIENT_ID")
+        missing_variables.append("AUDIENCE")
 
     tenant_id = os.getenv("ASERTO_TENANT_ID", None)
     authorizer_api_key = os.getenv("ASERTO_AUTHORIZER_API_KEY", "")
