@@ -1,12 +1,14 @@
+from uuid import uuid4
+
+from aserto.client import ResourceContext
+from dotenv import load_dotenv
 from flask import Flask, g, jsonify, request
+from flask_aserto import AsertoMiddleware, AuthorizationError
 from flask_cors import CORS
 
+from .db import Store, Todo
 from .directory import user_from_identity
-from .db import list_todos, insert_todo, update_todo, delete_todo
-from flask_aserto import AsertoMiddleware, AuthorizationError
 from .options import load_options_from_environment
-
-from dotenv import load_dotenv
 
 load_dotenv()
 
@@ -14,14 +16,31 @@ app = Flask(__name__)
 
 CORS(app, headers=["Content-Type", "Authorization"])
 
+store = Store()
+
+
+def owner_id_resource_mapper() -> ResourceContext:
+    resource = {}
+
+    if request.view_args and "id" in request.view_args:
+        todo = store.get(request.view_args["id"])
+        resource["ownerID"] = todo.OwnerID
+
+    return resource
+
+
 aserto_options = load_options_from_environment()
-aserto = AsertoMiddleware(**aserto_options)
+aserto = AsertoMiddleware(
+    resource_context_provider=owner_id_resource_mapper,
+    **aserto_options,
+)
 
 
 @app.errorhandler(AuthorizationError)
 def authorization_error(e):
     app.logger.info("authorization error: %s", e)
     return "Unauthorized", 403
+
 
 @app.errorhandler(ConnectionError)
 def connection_error(e):
@@ -32,40 +51,44 @@ def connection_error(e):
 @app.route("/todos", methods=["GET"])
 @aserto.authorize
 def get_todos():
-    results = list_todos()
+    results = store.list()
     return jsonify(results)
 
 
-@app.route("/todo", methods=["POST"])
+@app.route("/todos", methods=["POST"])
 @aserto.authorize
 def post_todo():
-    todo = request.get_json()
-    insert_todo(todo)
+    todo = Todo.from_json(request.get_json())
+    todo.ID = uuid4().hex
+    todo.OwnerID = g.identity
+
+    store.insert(todo)
     return jsonify(todo)
 
 
-@app.route("/todo/<ownerID>", methods=["PUT"])
+@app.route("/todos/<id>", methods=["PUT"])
 @aserto.authorize
-def put_todo(ownerID):
-    todo = request.get_json()
-    update_todo(todo)
+def put_todo(id: str):
+    todo = Todo.from_json(request.get_json())
+    todo.ID = id
+
+    store.update(todo)
     return jsonify(todo)
 
 
-@app.route("/todo/<ownerID>", methods=["DELETE"])
+@app.route("/todos/<id>", methods=["DELETE"])
 @aserto.authorize
-def remove_todo(ownerID):
-    todo = request.get_json()
-    delete_todo(todo)
+def remove_todo(id: str):
+    store.delete(id)
     resp = jsonify(success=True)
     resp.status_code = 200
     return resp
 
 
-@app.route("/user/<userID>", methods=["GET"])
+@app.route("/users/<userID>", methods=["GET"])
 @aserto.authorize
 def get_user(userID):
-    user= user_from_identity(userID)
+    user = user_from_identity(userID)
     return jsonify(user)
 
 
