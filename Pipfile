@@ -12,10 +12,13 @@ aserto-idp = "*"
 typing-extensions = "*"
 flask-aserto = "~=0.20.0"
 aserto-directory = "*"
-grpcio = "*"
+grpcio = "~=1.50.0"
 
 [dev-packages]
 black = "*"
+pynvim = "*"
+pyright = "*"
+isort = "*"
 
 [requires]
 python_version = "3.9"

@@ -1,43 +1,65 @@
+from __future__ import annotations
+
 import sqlite3
-from operator import itemgetter
+from dataclasses import dataclass
+from typing import Any, Optional, Sequence
 
-DATABASE = 'todo.db'
+DATABASE = "todo.db"
+SCHEMA = "schema.sql"
 
-con = sqlite3.connect(DATABASE)
 
-with open('schema.sql') as f:
-    con.executescript(f.read())
+@dataclass
+class Todo:
+    ID: Optional[str] = None
+    Title: str = ""
+    Completed: bool = False
+    OwnerID: Optional[str] = None
 
-def get_db_connection():
-    conn = sqlite3.connect(DATABASE)
-    conn.row_factory = sqlite3.Row
-    return conn
+    @staticmethod
+    def from_json(json_data: Any) -> Todo:
+        return Todo(**json_data)
 
-def list_todos():
-    conn = get_db_connection()
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM todos")
-    todos = cur.fetchall()
-    results = [dict(row) for row in todos]
-    return results
 
-def insert_todo(todo):
-    conn = get_db_connection()
-    id, title, completed, ownerID = itemgetter('ID', 'Title', 'Completed', 'OwnerID')(todo)
-    conn.execute("INSERT INTO todos VALUES (?, ?, ?, ?)", (id, title, completed, ownerID))
-    conn.commit()
-    conn.close()
+class Store:
+    def __init__(self, db_file: str = DATABASE, schema_file: str = SCHEMA):
+        self._db_file = db_file
+        with self._conn as conn, open(schema_file) as f:
+            conn.executescript(f.read())
 
-def update_todo(todo):
-    conn = get_db_connection()
-    id, title, completed, ownerID = itemgetter('ID', 'Title', 'Completed', 'OwnerID')(todo)
-    conn.execute("UPDATE todos SET Title=?, Completed=?, OwnerID=? WHERE ID=?", (title, completed, ownerID, id))
-    conn.commit()
-    conn.close()
+    @property
+    def _conn(self) -> sqlite3.Connection:
+        return sqlite3.connect(self._db_file)
 
-def delete_todo(todo):
-    conn = get_db_connection()
-    id = todo['ID']
-    conn.execute("DELETE FROM todos WHERE id=?", (id,))
-    conn.commit()
-    conn.close()
+    def list(self) -> Sequence[Todo]:
+        with self._conn as conn:
+            cur = conn.cursor().execute("SELECT * FROM todos")
+            return [Todo(*row) for row in cur.fetchall()]
+
+    def get(self, id: str) -> Todo:
+        with self._conn as conn:
+            cur = conn.cursor().execute("SELECT * FROM todos WHERE ID = ?", (id,))
+            return Todo(*cur.fetchone())
+
+    def insert(self, todo: Todo) -> None:
+        with self._conn as conn:
+            cur = conn.cursor()
+            cur.execute(
+                "INSERT INTO todos (ID, Title, Completed, OwnerID) VALUES (?, ?, ?, ?)",
+                (todo.ID, todo.Title, todo.Completed, todo.OwnerID),
+            )
+            conn.commit()
+
+    def update(self, todo: Todo) -> None:
+        with self._conn as conn:
+            cur = conn.cursor()
+            cur.execute(
+                "UPDATE todos SET Title = ?, Completed = ? WHERE ID = ?",
+                (todo.Title, todo.Completed, todo.ID),
+            )
+            conn.commit()
+
+    def delete(self, todo_id: str) -> None:
+        with self._conn as conn:
+            cur = conn.cursor()
+            cur.execute("DELETE FROM todos WHERE ID = ?", (todo_id,))
+            conn.commit()

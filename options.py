@@ -1,10 +1,12 @@
 import os
 from typing import Awaitable, Callable
+
 from aserto.client import AuthorizerOptions, Identity
-from aserto_idp.oidc import AccessTokenError, identity_provider as oidc_idp
-from flask import request
-from typing_extensions import TypedDict
+from aserto_idp.oidc import AccessTokenError
+from aserto_idp.oidc import identity_provider as oidc_idp
 from dotenv import load_dotenv
+from flask import g, request
+from typing_extensions import TypedDict
 
 load_dotenv()
 
@@ -24,7 +26,6 @@ class AsertoMiddlewareOptions(TypedDict):
 def load_options_from_environment() -> AsertoMiddlewareOptions:
     missing_variables = []
 
-
     authorizer_service_url = os.getenv(
         "ASERTO_AUTHORIZER_SERVICE_URL", DEFAULT_AUTHORIZER_URL
     )
@@ -33,7 +34,9 @@ def load_options_from_environment() -> AsertoMiddlewareOptions:
     if not policy_path_root:
         missing_variables.append("ASERTO_POLICY_ROOT")
 
-    cert_file_path = os.path.expandvars(os.getenv("AUTHORIZER_CERT_PATH", "")) or None
+    cert_file_path = (
+        os.path.expandvars(os.getenv("ASERTO_AUTHORIZER_CA_FILE", "")) or None
+    )
 
     oidc_issuer = os.getenv("ISSUER", "")
     if not oidc_issuer:
@@ -47,7 +50,6 @@ def load_options_from_environment() -> AsertoMiddlewareOptions:
     authorizer_api_key = os.getenv("ASERTO_AUTHORIZER_API_KEY", "")
     policy_instance_name = os.getenv("ASERTO_POLICY_INSTANCE_NAME", "")
     policy_instance_label = os.getenv("ASERTO_POLICY_INSTANCE_LABEL", "")
-
 
     if missing_variables:
         raise EnvironmentError(
@@ -75,6 +77,7 @@ def load_options_from_environment() -> AsertoMiddlewareOptions:
         except AccessTokenError:
             return Identity(type="NONE")
 
+        g.identity = identity
         return Identity(type="SUBJECT", subject=identity)
 
     return AsertoMiddlewareOptions(
@@ -84,4 +87,3 @@ def load_options_from_environment() -> AsertoMiddlewareOptions:
         policy_path_root=policy_path_root,
         identity_provider=identity_provider,
     )
-
