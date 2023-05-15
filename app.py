@@ -60,9 +60,12 @@ def get_todos():
 def post_todo():
     todo = Todo.from_json(request.get_json())
     todo.ID = uuid4().hex
-    todo.OwnerID = g.identity
+    try:
+        todo.OwnerID = user_from_identity(g.identity)["key"]
+        store.insert(todo)
+    except Exception as e:
+        return e.message, e.args
 
-    store.insert(todo)
     return jsonify(todo)
 
 
