@@ -7,7 +7,7 @@ from flask_aserto import AsertoMiddleware, AuthorizationError
 from flask_cors import CORS
 
 from .db import Store, Todo
-from .directory import user_from_identity
+from .directory import user_from_identity, user_from_key
 from .options import load_options_from_environment
 
 load_dotenv()
@@ -88,9 +88,9 @@ def remove_todo(id: str):
 @app.route("/users/<userID>", methods=["GET"])
 @aserto.authorize
 def get_user(userID):
-    user = user_from_identity(userID)
-    return jsonify(user)
-
+	user = user_from_identity(userID) if userID == g.identity else user_from_key(userID)
+	print("user:", user)
+	return jsonify(user)
 
 @app.teardown_appcontext
 def close_connection(exception):
