@@ -30,12 +30,15 @@ def load_options_from_environment() -> AsertoMiddlewareOptions:
         "ASERTO_AUTHORIZER_SERVICE_URL", DEFAULT_AUTHORIZER_URL
     )
 
+    if not authorizer_service_url.startswith("https://"):
+        authorizer_service_url = "https://" + authorizer_service_url
+
     policy_path_root = os.getenv("ASERTO_POLICY_ROOT", "")
     if not policy_path_root:
         missing_variables.append("ASERTO_POLICY_ROOT")
 
     cert_file_path = (
-        os.path.expandvars(os.getenv("ASERTO_AUTHORIZER_CA_FILE", "")) or None
+        os.path.expandvars(os.getenv("ASERTO_AUTHORIZER_CERT_PATH", "")) or None
     )
 
     oidc_issuer = os.getenv("ISSUER", "")
