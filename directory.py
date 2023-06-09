@@ -64,8 +64,6 @@ def _get_object(reader: ReaderStub, identifier: ObjectIdentifier) -> Dict[str, A
         GetObjectRequest(param=identifier), metadata=_metadata(api_key, tenant_id)
     )
 
-    print("userResp: ", userResp)
-
     props = MessageToDict(userResp.result.properties)
 
     return dict(

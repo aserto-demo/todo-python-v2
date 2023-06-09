@@ -89,7 +89,6 @@ def remove_todo(id: str):
 @aserto.authorize
 def get_user(userID):
 	user = user_from_identity(userID) if userID == g.identity else user_from_key(userID)
-	print("user:", user)
 	return jsonify(user)
 
 @app.teardown_appcontext
