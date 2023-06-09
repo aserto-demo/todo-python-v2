@@ -10,7 +10,7 @@ from typing_extensions import TypedDict
 
 load_dotenv()
 
-DEFAULT_AUTHORIZER_URL = "authorizer.prod.aserto.com"
+DEFAULT_AUTHORIZER_URL = "https://authorizer.prod.aserto.com"
 
 __all__ = ["AsertoMiddlewareOptions", "load_options_from_environment"]
 
@@ -29,6 +29,9 @@ def load_options_from_environment() -> AsertoMiddlewareOptions:
     authorizer_service_url = os.getenv(
         "ASERTO_AUTHORIZER_SERVICE_URL", DEFAULT_AUTHORIZER_URL
     )
+
+    if not authorizer_service_url.startswith("https://"):
+        authorizer_service_url = "https://" + authorizer_service_url
 
     policy_path_root = os.getenv("ASERTO_POLICY_ROOT", "")
     if not policy_path_root:
@@ -57,7 +60,7 @@ def load_options_from_environment() -> AsertoMiddlewareOptions:
         )
 
     options = AuthorizerOptions(
-        url= "https://" + authorizer_service_url,
+        url=authorizer_service_url,
         tenant_id=tenant_id,
         api_key=authorizer_api_key,
         cert_file_path=cert_file_path,
