@@ -33,14 +33,13 @@ def user_from_identity(sub) -> Dict[str, Any]:
             metadata=_metadata(api_key, tenant_id)
         )
 
-        userResp = _get_object(reader, relationResp.results[0].subject)
-        props = MessageToDict(userResp.result.properties)
+        return _get_object(reader, relationResp.results[0].subject)
 
-        return dict(
-            key=userResp.result.key,
-            name=userResp.result.display_name,
-            **props
-        )
+def user_from_key(key) -> Dict[str, Any]:
+    with grpc.secure_channel(target=address, credentials=_channel_credentials()) as channel:
+        reader = ReaderStub(channel)
+
+        return _get_object(reader, ObjectIdentifier(type="user", key=key))
 
 def _channel_credentials() -> grpc.ChannelCredentials:
     if cert:
@@ -60,7 +59,15 @@ def _metadata(api_key: Optional[str], tenant_id: Optional[str]) -> Tuple:
 
     return md
 
-def _get_object(reader: ReaderStub, identifier: ObjectIdentifier) -> GetObjectResponse:
-    return reader.GetObject(
+def _get_object(reader: ReaderStub, identifier: ObjectIdentifier) -> Dict[str, Any]:
+    userResp = reader.GetObject(
         GetObjectRequest(param=identifier), metadata=_metadata(api_key, tenant_id)
+    )
+
+    props = MessageToDict(userResp.result.properties)
+
+    return dict(
+        key=userResp.result.key,
+        name=userResp.result.display_name,
+        **props
     )
