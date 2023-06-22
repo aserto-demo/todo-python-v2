@@ -12,7 +12,6 @@ aserto-idp = "*"
 typing-extensions = "*"
 flask-aserto = "~=0.20.0"
 aserto = {editable = true, path = "../../aserto-dev/aserto-python/packages/aserto"}
-aserto-directory = "*"
 grpcio = "~=1.50.0"
 
 [dev-packages]

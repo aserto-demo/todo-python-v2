@@ -1,67 +1,47 @@
 import os
+from typing import Any, Dict
 
-from typing import Any, Dict, Optional, Tuple
-
-import grpc
-
+from aserto.client.directory import Directory, Object
 from google.protobuf.json_format import MessageToDict
 
-from aserto.client import Directory
-
-from aserto.directory.common.v2 import ObjectIdentifier, RelationIdentifier, RelationTypeIdentifier
-from aserto.directory.reader.v2 import GetObjectRequest, GetObjectResponse, GetRelationRequest, ReaderStub
-
 DEFAULT_DIRECTORY_ADDRESS = "directory.prod.aserto.com:8443"
-
 
 address = os.getenv("ASERTO_DIRECTORY_SERVICE_URL", DEFAULT_DIRECTORY_ADDRESS)
 cert = os.path.expandvars(os.getenv("DIRECTORY_GRPC_CERT_PATH", ""))
 api_key = os.getenv("ASERTO_DIRECTORY_API_KEY")
 tenant_id = os.getenv("ASERTO_TENANT_ID")
 
-config = {"api_key": api_key, "tenant_id": tenant_id, "address": address, "ca_cert": cert}
+config = {
+    "api_key": api_key,
+    "tenant_id": tenant_id,
+    "address": address,
+    "ca_cert": cert,
+}
+
 ds = Directory(**config)
 
 
 def user_from_identity(sub) -> Dict[str, Any]:
-
-    relationResp = ds.reader.GetRelation(
-        GetRelationRequest(
-            param=RelationIdentifier(
-                subject=ObjectIdentifier(type="user"),
-                relation=RelationTypeIdentifier(
-                    name="identifier", object_type="identity"
-                ),
-                object=ObjectIdentifier(type="identity", key=sub),
-            ),
-        ),
-        metadata=_metadata(api_key, tenant_id),
+    relationResp = ds.get_relation(
+        subject_type="user",
+        object_key=sub,
+        object_type="identity",
+        relation_type="identifier",
     )
 
-    return _get_object(ds.reader, relationResp.results[0].subject)
+    user = ds.get_object(
+        key=relationResp.subject.key,
+        type=relationResp.subject.type,
+    )
+
+    return _get_object_dict(user)
+
 
 def user_from_key(key) -> Dict[str, Any]:
-    return _get_object(ds.reader, ObjectIdentifier(type="user", key=key))
+    user = ds.get_object(key=key, type="user")
+    return _get_object_dict(user)
 
 
-def _metadata(api_key: Optional[str], tenant_id: Optional[str]) -> Tuple:
-    md = ()
-    if api_key:
-        md += (("authorization", f"basic {api_key}"),)
-    if tenant_id:
-        md += (("aserto-tenant-id", tenant_id),)
-
-    return md
-
-def _get_object(reader: ReaderStub, identifier: ObjectIdentifier) -> Dict[str, Any]:
-    userResp = reader.GetObject(
-        GetObjectRequest(param=identifier), metadata=_metadata(api_key, tenant_id)
-    )
-
-    props = MessageToDict(userResp.result.properties)
-
-    return dict(
-        key=userResp.result.key,
-        name=userResp.result.display_name,
-        **props
-    )
+def _get_object_dict(object: Object) -> Dict[str, Any]:
+    props = MessageToDict(object.properties)
+    return dict(key=object.key, name=object.display_name, **props)
