@@ -27,7 +27,7 @@ def user_from_identity(sub) -> Dict[str, Any]:
         object_key=sub,
         object_type="identity",
         relation_type="identifier",
-    )
+    )["relation"]
 
     user = ds.get_object(
         key=relationResp.subject.key,

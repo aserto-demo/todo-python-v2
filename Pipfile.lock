@@ -131,11 +131,11 @@
         },
         "aserto-directory": {
             "hashes": [
-                "sha256:93177c03d2ba05a42fdf7bb683ecf80cf594dc2eb8682ed285f9fc18f3904aa2",
-                "sha256:ec9c82889366717b9ce5ed6c8b11fe4def849776cf51efe37d9e1e099771ef47"
+                "sha256:0a8068e1a14fff57da2e5701bcb7b5aa4fab98502e6c9f70f9b41aa16b99f736",
+                "sha256:f8f9e2430502700248c4bde680eeae5854de060280e473a7efe93a2146edcd6a"
             ],
             "markers": "python_version >= '3.7' and python_version < '4.0'",
-            "version": "==0.0.1rc1"
+            "version": "==0.21.0"
         },
         "aserto-idp": {
             "hashes": [
@@ -1104,11 +1104,11 @@
         },
         "platformdirs": {
             "hashes": [
-                "sha256:87fbf6473e87c078d536980ba970a472422e94f17b752cfad17024c18876d481",
-                "sha256:cfd065ba43133ff103ab3bd10aecb095c2a0035fcd1f07217c9376900d94ba07"
+                "sha256:b0cabcb11063d21a0b261d557acb0a9d2126350e63b70cdf7db6347baea456dc",
+                "sha256:ca9ed98ce73076ba72e092b23d3c93ea6c4e186b3f1c3dad6edd98ff6ffcca2e"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==3.7.0"
+            "version": "==3.8.0"
         },
         "pynvim": {
             "hashes": [
