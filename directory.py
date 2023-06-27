@@ -11,7 +11,7 @@ DEFAULT_DIRECTORY_ADDRESS = "directory.prod.aserto.com:8443"
 @cache
 def ds() -> Directory:
     address = os.getenv("ASERTO_DIRECTORY_SERVICE_URL", DEFAULT_DIRECTORY_ADDRESS)
-    cert = os.path.expandvars(os.getenv("DIRECTORY_GRPC_CERT_PATH", ""))
+    cert = os.path.expandvars(os.getenv("ASERTO_DIRECTORY_GRPC_CERT_PATH", ""))
     api_key = os.getenv("ASERTO_DIRECTORY_API_KEY")
     tenant_id = os.getenv("ASERTO_TENANT_ID")
 
