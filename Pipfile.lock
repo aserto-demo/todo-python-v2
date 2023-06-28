@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "ed27087f97f6bfa1eefc1a6d0fe703f5e1fa7b1cdf69cabd19b884508c002791"
+            "sha256": "8e2f249cd4388430e40786fc11c5cb0629e9a17bb6f11c528975fa1d6100f180"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -118,8 +118,12 @@
             "version": "==1.3.1"
         },
         "aserto": {
-            "editable": true,
-            "path": "../../aserto-dev/aserto-python/packages/aserto"
+            "hashes": [
+                "sha256:851786310448382965d1f67fa4379f85c45296ac62d837bf270406102cd1eac0",
+                "sha256:e16bc0294a0193aa7753ac233da4ec5e0caf253a70d7f8f099944efbcf92d1d9"
+            ],
+            "index": "pypi",
+            "version": "==0.20.0"
         },
         "aserto-authorizer": {
             "hashes": [
@@ -128,14 +132,6 @@
             ],
             "markers": "python_version >= '3.7' and python_version < '4.0'",
             "version": "==0.20.0"
-        },
-        "aserto-directory": {
-            "hashes": [
-                "sha256:0a8068e1a14fff57da2e5701bcb7b5aa4fab98502e6c9f70f9b41aa16b99f736",
-                "sha256:f8f9e2430502700248c4bde680eeae5854de060280e473a7efe93a2146edcd6a"
-            ],
-            "markers": "python_version >= '3.7' and python_version < '4.0'",
-            "version": "==0.21.0"
         },
         "aserto-idp": {
             "hashes": [
@@ -772,7 +768,7 @@
                 "sha256:1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926",
                 "sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254"
             ],
-            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2'",
+            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'",
             "version": "==1.16.0"
         },
         "typing-extensions": {
@@ -1119,11 +1115,11 @@
         },
         "pyright": {
             "hashes": [
-                "sha256:262744daa7455f6056f6d6609b6278258e2fd7bd100d8937203516ee71d0eb93",
-                "sha256:f124400a1a72ccc5fd04836e7e48ed235e8f7929bcc42b270a571fb34df17979"
+                "sha256:7259d73287c882f933d8cd88c238ef02336e172171ae95117a963a962a1fed4a",
+                "sha256:bac1baf8567b90f2082ec95b61fc1cb50a68917119212c5608a72210870c6a9a"
             ],
             "index": "pypi",
-            "version": "==1.1.315"
+            "version": "==1.1.316"
         },
         "setuptools": {
             "hashes": [
