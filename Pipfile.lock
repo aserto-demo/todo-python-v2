@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "8e2f249cd4388430e40786fc11c5cb0629e9a17bb6f11c528975fa1d6100f180"
+            "sha256": "53c6070204e7874c69e1d914b4a21bbdab5c56ff7611733497bab90b5750396f"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -119,11 +119,11 @@
         },
         "aserto": {
             "hashes": [
-                "sha256:851786310448382965d1f67fa4379f85c45296ac62d837bf270406102cd1eac0",
-                "sha256:e16bc0294a0193aa7753ac233da4ec5e0caf253a70d7f8f099944efbcf92d1d9"
+                "sha256:121b663105c5d1139d21e88d12d239652edb5fcba8561ad255953462311ec5e6",
+                "sha256:1339531079eedb68b403064affce674f8e2256f288f38b9896ec81c3984a71f2"
             ],
             "index": "pypi",
-            "version": "==0.20.0"
+            "version": "==0.21.0"
         },
         "aserto-authorizer": {
             "hashes": [
@@ -132,6 +132,14 @@
             ],
             "markers": "python_version >= '3.7' and python_version < '4.0'",
             "version": "==0.20.0"
+        },
+        "aserto-directory": {
+            "hashes": [
+                "sha256:0a8068e1a14fff57da2e5701bcb7b5aa4fab98502e6c9f70f9b41aa16b99f736",
+                "sha256:f8f9e2430502700248c4bde680eeae5854de060280e473a7efe93a2146edcd6a"
+            ],
+            "markers": "python_version >= '3.7' and python_version < '4.0'",
+            "version": "==0.21.0"
         },
         "aserto-idp": {
             "hashes": [
@@ -382,11 +390,11 @@
         },
         "flask-aserto": {
             "hashes": [
-                "sha256:47d22f0ca9e98aca376d7ac74c6f059b1ce19516e8e6e87d261c29d1ff4e7008",
-                "sha256:5642fad01026e3fe521c26435fdb926930471f1afdf36bcc954abf37d95377f6"
+                "sha256:7d1ce84ec6b47d64bcc43b9233af66202ad5a10e3395d4e8202668a4585628c3",
+                "sha256:f2549b9ce52cc3c6934b5e48fda02b45155989a2e4eca0223e244ea52abb2dda"
             ],
             "index": "pypi",
-            "version": "==0.20.0"
+            "version": "==0.20.1"
         },
         "flask-cors": {
             "hashes": [
@@ -768,7 +776,7 @@
                 "sha256:1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926",
                 "sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254"
             ],
-            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'",
+            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2'",
             "version": "==1.16.0"
         },
         "typing-extensions": {
