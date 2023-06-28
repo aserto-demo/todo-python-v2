@@ -10,8 +10,8 @@ python-dotenv = "*"
 requests = "*"
 aserto-idp = "*"
 typing-extensions = "*"
-flask-aserto = "~=0.20.0"
-aserto-directory = "*"
+flask-aserto = "~=0.20.1"
+aserto = ">= 0.21"
 grpcio = "~=1.50.0"
 
 [dev-packages]

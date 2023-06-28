@@ -1,6 +1,7 @@
 from uuid import uuid4
 
 from aserto.client import ResourceContext
+from aserto.client.directory import NotFoundError
 from dotenv import load_dotenv
 from flask import Flask, g, jsonify, request
 from flask_aserto import AsertoMiddleware, AuthorizationError
@@ -88,8 +89,16 @@ def remove_todo(id: str):
 @app.route("/users/<userID>", methods=["GET"])
 @aserto.authorize
 def get_user(userID):
-	user = user_from_identity(userID) if userID == g.identity else user_from_key(userID)
-	return jsonify(user)
+    try:
+        user = (
+            user_from_identity(userID)
+            if userID == g.identity
+            else user_from_key(userID)
+        )
+        return jsonify(user)
+    except NotFoundError:
+        return "user not found", 401
+
 
 @app.teardown_appcontext
 def close_connection(exception):
