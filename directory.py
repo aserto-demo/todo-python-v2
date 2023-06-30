@@ -32,7 +32,6 @@ def user_from_identity(sub) -> Dict[str, Any]:
         key=relationResp.subject.key,
         type=relationResp.subject.type,
     )
-    print(user)
 
     return _get_object_dict(user)
 
