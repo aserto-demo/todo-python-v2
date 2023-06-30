@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "15d3172b70d0057408a01189ebd778d26fcd72de1a4c8bd4dd7ae188057a533d"
+            "sha256": "029cb4ac20a3dd30003c89ae9f40ccb3229e94b7e4a3d42221ec394ec100bfa7"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -118,12 +118,8 @@
             "version": "==1.3.1"
         },
         "aserto": {
-            "hashes": [
-                "sha256:121b663105c5d1139d21e88d12d239652edb5fcba8561ad255953462311ec5e6",
-                "sha256:1339531079eedb68b403064affce674f8e2256f288f38b9896ec81c3984a71f2"
-            ],
-            "index": "pypi",
-            "version": "==0.21.0"
+            "editable": true,
+            "path": "../../aserto-dev/aserto-python/packages/aserto"
         },
         "aserto-authorizer": {
             "hashes": [
@@ -374,7 +370,7 @@
                 "sha256:190348041559e21b22a1d65cee485282ca11a6f81d503fddb84d5017e9ed1e49",
                 "sha256:80600258e7ed2f16b9aa1d7c295bd70194109ad5a30fdee0eaeefef1d4c559dd"
             ],
-            "markers": "python_version >= '2.6' and python_version not in '3.0, 3.1, 3.2'",
+            "markers": "python_version >= '2.6' and python_version not in '3.0, 3.1, 3.2, 3.3'",
             "version": "==0.18.0"
         },
         "flask": {
@@ -776,7 +772,7 @@
                 "sha256:1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926",
                 "sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254"
             ],
-            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2'",
+            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'",
             "version": "==1.16.0"
         },
         "typing-extensions": {
