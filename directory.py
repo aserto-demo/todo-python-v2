@@ -15,18 +15,22 @@ def ds() -> Directory:
     api_key = os.getenv("ASERTO_DIRECTORY_API_KEY")
     tenant_id = os.getenv("ASERTO_TENANT_ID")
 
-    return Directory.connect(
+    return Directory(
         api_key=api_key, tenant_id=tenant_id, address=address, ca_cert=cert
     )
 
 
 def user_from_identity(sub) -> Dict[str, Any]:
-    relationResp = ds().get_relation(
-        subject_type="user",
-        object_key=sub,
-        object_type="identity",
-        relation_type="identifier",
-    )["relation"]
+    relationResp = (
+        ds()
+        .get_relation(
+            subject_type="user",
+            object_key=sub,
+            object_type="identity",
+            relation_type="identifier",
+        )
+        .relation
+    )
 
     user = ds().get_object(
         key=relationResp.subject.key,
