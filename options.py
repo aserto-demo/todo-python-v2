@@ -1,4 +1,5 @@
 import os
+import jwt
 from typing import Awaitable, Callable
 
 from aserto.client import AuthorizerOptions, Identity
@@ -69,14 +70,25 @@ def load_options_from_environment() -> AsertoMiddlewareOptions:
 
     idp = oidc_idp(issuer=oidc_issuer, client_id=oidc_client_id)
 
-    async def identity_provider() -> Identity:
+    def identity_provider() -> Identity:
         authorization_header = request.headers.get("Authorization")
 
         if authorization_header is None:
             return Identity(type="NONE")
 
         try:
-            identity = await idp.subject_from_jwt_auth_header(authorization_header)
+            parts = authorization_header.split()
+            if not parts:
+                raise AccessTokenError("Authorization header missing")
+            elif parts[0].lower() != "bearer":
+                raise AccessTokenError("Authorization header must start with 'Bearer'")
+            elif len(parts) == 1:
+                raise AccessTokenError("Bearer token not found")
+            elif len(parts) > 2:
+                raise AccessTokenError("Authorization header must be a valid Bearer token")
+
+            decoded = jwt.decode(parts[1], algorithms=["RS256"], options={"verify_signature": False})
+            identity = decoded["sub"]
         except AccessTokenError:
             return Identity(type="NONE")
 
