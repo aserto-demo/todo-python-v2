@@ -102,3 +102,7 @@ def load_options_from_environment() -> AsertoMiddlewareOptions:
         policy_path_root=policy_path_root,
         identity_provider=identity_provider,
     )
+
+
+def id_mapper() -> str:
+    return request.path

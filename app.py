@@ -4,12 +4,12 @@ from aserto.client import ResourceContext
 from aserto.client.directory import NotFoundError
 from dotenv import load_dotenv
 from flask import Flask, g, jsonify, request
-from flask_aserto import AsertoMiddleware, AuthorizationError
+from flask_aserto import AsertoMiddleware, AuthorizationError, CheckOptions
 from flask_cors import CORS
 
 from .db import Store, Todo
 from .directory import user_from_identity, user_from_key
-from .options import load_options_from_environment
+from .options import load_options_from_environment, id_mapper
 
 load_dotenv()
 
@@ -78,7 +78,7 @@ def put_todo(id: str):
 
 
 @app.route("/todos/<id>", methods=["DELETE"])
-@aserto.authorize
+@aserto.check(opts=CheckOptions(objType="group", relationName="member", objId="evil_genius")).authorize
 def remove_todo(id: str):
     store.delete(id)
     resp = jsonify(success=True)

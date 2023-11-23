@@ -5,14 +5,13 @@ name = "pypi"
 
 [packages]
 flask = {extras = ["async"], version = "*"}
-flask-cors = "*"
+flask-aserto = {file = "../aserto-python/packages/flask-aserto", editable = true}
+aserto-authorizer = {file = "../python-authorizer", editable = true}
+aserto-directory = {file = "../python-directory", editable = true}
+aserto = {file = "../aserto-python/packages/aserto", editable = true}
 python-dotenv = "*"
-requests = "*"
-aserto-idp = "*"
-typing-extensions = "*"
-flask-aserto = "~=0.20.1"
-aserto = ">= 0.21.1"
-grpcio = "~=1.50.0"
+pyjwt = "*"
+aserto-idp = {file = "../aserto-python/packages/aserto-idp", editable = true}
 
 [dev-packages]
 black = "*"
