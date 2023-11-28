@@ -1,14 +1,12 @@
 from uuid import uuid4
 
-from aserto.client import ResourceContext
-from aserto.client.directory import NotFoundError
 from dotenv import load_dotenv
 from flask import Flask, g, jsonify, request
-from flask_aserto import AsertoMiddleware, AuthorizationError
+from flask_aserto import AsertoMiddleware, AuthorizationError, ResourceContext
 from flask_cors import CORS
 
 from .db import Store, Todo
-from .directory import user_from_identity, user_from_key
+from .directory import UserNotFoundError, user_from_id, user_from_identity
 from .options import load_options_from_environment
 
 load_dotenv()
@@ -91,12 +89,10 @@ def remove_todo(id: str):
 def get_user(userID):
     try:
         user = (
-            user_from_identity(userID)
-            if userID == g.identity
-            else user_from_key(userID)
+            user_from_identity(userID) if userID == g.identity else user_from_id(userID)
         )
         return jsonify(user)
-    except NotFoundError:
+    except UserNotFoundError:
         return "user not found", 401
 
 

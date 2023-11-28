@@ -1,19 +1,20 @@
 import os
-import jwt
-from typing import Awaitable, Callable
+from typing import TypedDict
 
-from aserto.client import AuthorizerOptions, Identity
-from aserto_idp.oidc import AccessTokenError
-from aserto_idp.oidc import identity_provider as oidc_idp
 from dotenv import load_dotenv
 from flask import g, request
-from typing_extensions import TypedDict
+from flask_aserto import AuthorizerOptions, Identity, IdentityMapper, IdentityType
+import jwt
 
 load_dotenv()
 
-DEFAULT_AUTHORIZER_URL = "https://authorizer.prod.aserto.com"
+DEFAULT_AUTHORIZER_URL = "authorizer.prod.aserto.com:8443"
 
 __all__ = ["AsertoMiddlewareOptions", "load_options_from_environment"]
+
+
+class AccessTokenError(Exception):
+    pass
 
 
 class AsertoMiddlewareOptions(TypedDict):
@@ -21,7 +22,7 @@ class AsertoMiddlewareOptions(TypedDict):
     policy_instance_name: str
     policy_instance_label: str
     policy_path_root: str
-    identity_provider: Callable[[], Awaitable[Identity]]
+    identity_provider: IdentityMapper
 
 
 def load_options_from_environment() -> AsertoMiddlewareOptions:
@@ -30,9 +31,6 @@ def load_options_from_environment() -> AsertoMiddlewareOptions:
     authorizer_service_url = os.getenv(
         "ASERTO_AUTHORIZER_SERVICE_URL", DEFAULT_AUTHORIZER_URL
     )
-
-    if not authorizer_service_url.startswith("https://"):
-        authorizer_service_url = "https://" + authorizer_service_url
 
     policy_path_root = os.getenv("ASERTO_POLICY_ROOT", "")
     if not policy_path_root:
@@ -65,16 +63,13 @@ def load_options_from_environment() -> AsertoMiddlewareOptions:
         tenant_id=tenant_id,
         api_key=authorizer_api_key,
         cert_file_path=cert_file_path,
-        service_type="gRPC",
     )
-
-    idp = oidc_idp(issuer=oidc_issuer, client_id=oidc_client_id)
 
     def identity_provider() -> Identity:
         authorization_header = request.headers.get("Authorization")
 
         if authorization_header is None:
-            return Identity(type="NONE")
+            return Identity(IdentityType.IDENTITY_TYPE_NONE)
 
         try:
             parts = authorization_header.split()
@@ -85,15 +80,19 @@ def load_options_from_environment() -> AsertoMiddlewareOptions:
             elif len(parts) == 1:
                 raise AccessTokenError("Bearer token not found")
             elif len(parts) > 2:
-                raise AccessTokenError("Authorization header must be a valid Bearer token")
+                raise AccessTokenError(
+                    "Authorization header must be a valid Bearer token"
+                )
 
-            decoded = jwt.decode(parts[1], algorithms=["RS256"], options={"verify_signature": False})
+            decoded = jwt.decode(
+                parts[1], algorithms=["RS256"], options={"verify_signature": False}
+            )
             identity = decoded["sub"]
         except AccessTokenError:
-            return Identity(type="NONE")
+            return Identity(IdentityType.IDENTITY_TYPE_NONE)
 
         g.identity = identity
-        return Identity(type="SUBJECT", subject=identity)
+        return Identity(type=IdentityType.IDENTITY_TYPE_SUB, value=identity)
 
     return AsertoMiddlewareOptions(
         authorizer_options=options,
