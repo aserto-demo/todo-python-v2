@@ -7,6 +7,7 @@ from jose import jwt
 
 from typing import Dict, List, Union
 from urllib.parse import urlparse
+from functools import lru_cache
 
 import requests
 
@@ -42,19 +43,19 @@ def get_token_auth_header():
 def requires_auth(f):
     """Determines if the Access Token is valid
     """
+    missing_variables = []
+    oidc_issuer = os.getenv("ISSUER", "")
+    if not oidc_issuer:
+        missing_variables.append("ISSUER")
+
+    oidc_client_id = os.getenv("AUDIENCE", "")
+    if not oidc_client_id:
+        missing_variables.append("AUDIENCE")
+
+    if missing_variables:
+        raise EnvironmentError(f"environment variables not set: {', '.join(missing_variables)}")
     @wraps(f)
     def decorated(*args, **kwargs):
-        missing_variables = []
-        oidc_issuer = os.getenv("ISSUER", "")
-        if not oidc_issuer:
-            missing_variables.append("ISSUER")
-
-        oidc_client_id = os.getenv("AUDIENCE", "")
-        if not oidc_client_id:
-            missing_variables.append("AUDIENCE")
-
-        if missing_variables:
-            raise EnvironmentError(f"environment variables not set: {', '.join(missing_variables)}")
         
         token = get_token_auth_header()
         key_id = get_key_id(token)
@@ -83,6 +84,7 @@ def get_key_id(token: str) -> str:
 
     return kid  # type: ignore
 
+@lru_cache
 def find_signing_key(discovery_url: str, key_id: str) -> Key:
         """Find and return the signing key for the specified key ID.
 
