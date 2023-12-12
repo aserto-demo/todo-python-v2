@@ -1,15 +1,14 @@
 from uuid import uuid4
 
-from aserto.client import ResourceContext
-from aserto.client.directory import NotFoundError
 from dotenv import load_dotenv
 from flask import Flask, g, jsonify, request
-from flask_aserto import AsertoMiddleware, AuthorizationError
+from flask_aserto import AsertoMiddleware, AuthorizationError, ResourceContext
 from flask_cors import CORS
 
 from .db import Store, Todo
-from .directory import user_from_identity, user_from_key
+from .directory import UserNotFoundError, user_from_id, user_from_identity
 from .options import load_options_from_environment
+from .authn import requires_auth
 
 load_dotenv()
 
@@ -50,6 +49,7 @@ def connection_error(e):
 
 
 @app.route("/todos", methods=["GET"])
+@requires_auth
 @aserto.authorize
 def get_todos():
     results = store.list()
@@ -57,6 +57,7 @@ def get_todos():
 
 
 @app.route("/todos", methods=["POST"])
+@requires_auth
 @aserto.authorize
 def post_todo():
     todo = Todo.from_json(request.get_json())
@@ -68,6 +69,7 @@ def post_todo():
 
 
 @app.route("/todos/<id>", methods=["PUT"])
+@requires_auth
 @aserto.authorize
 def put_todo(id: str):
     todo = Todo.from_json(request.get_json())
@@ -78,6 +80,7 @@ def put_todo(id: str):
 
 
 @app.route("/todos/<id>", methods=["DELETE"])
+@requires_auth
 @aserto.authorize
 def remove_todo(id: str):
     store.delete(id)
@@ -87,16 +90,15 @@ def remove_todo(id: str):
 
 
 @app.route("/users/<userID>", methods=["GET"])
+@requires_auth
 @aserto.authorize
 def get_user(userID):
     try:
         user = (
-            user_from_identity(userID)
-            if userID == g.identity
-            else user_from_key(userID)
+            user_from_identity(userID) if userID == g.identity else user_from_id(userID)
         )
         return jsonify(user)
-    except NotFoundError:
+    except UserNotFoundError:
         return "user not found", 401
 
 
