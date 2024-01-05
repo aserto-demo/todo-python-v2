@@ -6,7 +6,13 @@ from flask_aserto import AsertoMiddleware, AuthorizationError, ResourceContext
 from flask_cors import CORS
 
 from .db import Store, Todo
-from .directory import UserNotFoundError, user_from_id, user_from_identity
+from .directory import (
+    UserNotFoundError,
+    delete_todo,
+    insert_todo,
+    user_from_id,
+    user_from_identity,
+)
 from .options import load_options_from_environment
 from .authn import requires_auth
 
@@ -23,13 +29,18 @@ def owner_id_resource_mapper() -> ResourceContext:
     resource = {}
 
     if request.view_args and "id" in request.view_args:
-        todo = store.get(request.view_args["id"])
-        resource["ownerID"] = todo.OwnerID
+        resource["object_id"] = request.view_args["id"]
 
     return resource
 
 
-aserto_options = load_options_from_environment()
+aserto_options_rest = load_options_from_environment()
+aserto_rest = AsertoMiddleware(
+    resource_context_provider=owner_id_resource_mapper,
+    **aserto_options_rest,
+)
+
+aserto_options = load_options_from_environment("rebac")
 aserto = AsertoMiddleware(
     resource_context_provider=owner_id_resource_mapper,
     **aserto_options,
@@ -50,7 +61,7 @@ def connection_error(e):
 
 @app.route("/todos", methods=["GET"])
 @requires_auth
-@aserto.authorize
+@aserto_rest.authorize
 def get_todos():
     results = store.list()
     return jsonify(results)
@@ -58,19 +69,22 @@ def get_todos():
 
 @app.route("/todos", methods=["POST"])
 @requires_auth
-@aserto.authorize
+@aserto.check(
+    objType="resource-creator", objId="resource-creators", relationName="member"
+)
 def post_todo():
     todo = Todo.from_json(request.get_json())
     todo.ID = uuid4().hex
-    todo.OwnerID = user_from_identity(g.identity)["key"]
+    todo.OwnerID = user_from_identity(g.identity)["id"]
     store.insert(todo)
+    insert_todo(todo)
 
     return jsonify(todo)
 
 
 @app.route("/todos/<id>", methods=["PUT"])
 @requires_auth
-@aserto.authorize
+@aserto_rest.authorize
 def put_todo(id: str):
     todo = Todo.from_json(request.get_json())
     todo.ID = id
@@ -81,9 +95,10 @@ def put_todo(id: str):
 
 @app.route("/todos/<id>", methods=["DELETE"])
 @requires_auth
-@aserto.authorize
+@aserto_rest.authorize
 def remove_todo(id: str):
     store.delete(id)
+    delete_todo(id)
     resp = jsonify(success=True)
     resp.status_code = 200
     return resp
@@ -91,7 +106,7 @@ def remove_todo(id: str):
 
 @app.route("/users/<userID>", methods=["GET"])
 @requires_auth
-@aserto.authorize
+@aserto_rest.authorize
 def get_user(userID):
     try:
         user = (
