@@ -2,7 +2,8 @@ from uuid import uuid4
 
 from dotenv import load_dotenv
 from flask import Flask, g, jsonify, request
-from flask_aserto import AsertoMiddleware, AuthorizationError, ResourceContext
+from flask_aserto import AsertoMiddleware, AuthorizationError
+from aserto.client import ResourceContext
 from flask_cors import CORS
 
 from .db import Store, Todo
@@ -34,7 +35,7 @@ def owner_id_resource_mapper() -> ResourceContext:
     return resource
 
 
-aserto_options_rest = load_options_from_environment()
+aserto_options_rest = load_options_from_environment("")
 aserto_rest = AsertoMiddleware(
     resource_context_provider=owner_id_resource_mapper,
     **aserto_options_rest,
@@ -69,9 +70,7 @@ def get_todos():
 
 @app.route("/todos", methods=["POST"])
 @requires_auth
-@aserto.check(
-    objType="resource-creator", objId="resource-creators", relationName="member"
-)
+@aserto.check(objType="resource-creator", objId="resource-creators", relationName="member").authorize
 def post_todo():
     todo = Todo.from_json(request.get_json())
     todo.ID = uuid4().hex

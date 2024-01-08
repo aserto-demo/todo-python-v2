@@ -5,7 +5,7 @@ from typing import Any, Dict
 from aserto.client.directory.v3 import Directory, NotFoundError, Object
 from google.protobuf.json_format import MessageToDict
 
-from db import Todo
+from .db import Todo
 
 DEFAULT_DIRECTORY_ADDRESS = "directory.prod.aserto.com:8443"
 
@@ -47,7 +47,7 @@ def user_from_identity(sub) -> Dict[str, Any]:
 def insert_todo(todo: Todo):
     try:
         ds().set_object(
-            object_type="resource", object_id=todo.ID, display_name=todo.Title
+            object_type="resource", object_id=todo.ID, display_name=todo.Title, properties={}
         )
 
         ds().set_relation(

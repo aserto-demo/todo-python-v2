@@ -1,9 +1,9 @@
 import os
-from typing import TypedDict
+from typing import TypedDict, Callable
 
 from dotenv import load_dotenv
 from flask import g
-from flask_aserto import AuthorizerOptions, Identity, IdentityMapper, IdentityType
+from aserto.client import AuthorizerOptions, Identity, IdentityType
 
 load_dotenv()
 
@@ -11,6 +11,7 @@ DEFAULT_AUTHORIZER_URL = "authorizer.prod.aserto.com:8443"
 
 __all__ = ["AsertoMiddlewareOptions", "load_options_from_environment"]
 
+IdentityMapper = Callable[[], Identity]
 
 class AccessTokenError(Exception):
     pass
