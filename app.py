@@ -35,13 +35,7 @@ def owner_id_resource_mapper() -> ResourceContext:
     return resource
 
 
-aserto_options_rest = load_options_from_environment("")
-aserto_rest = AsertoMiddleware(
-    resource_context_provider=owner_id_resource_mapper,
-    **aserto_options_rest,
-)
-
-aserto_options = load_options_from_environment("rebac")
+aserto_options = load_options_from_environment()
 aserto = AsertoMiddleware(
     resource_context_provider=owner_id_resource_mapper,
     **aserto_options,
@@ -62,7 +56,7 @@ def connection_error(e):
 
 @app.route("/todos", methods=["GET"])
 @requires_auth
-@aserto_rest.authorize
+@aserto.authorize
 def get_todos():
     results = store.list()
     return jsonify(results)
@@ -70,7 +64,7 @@ def get_todos():
 
 @app.route("/todos", methods=["POST"])
 @requires_auth
-@aserto.check(objType="resource-creator", objId="resource-creators", relationName="member").authorize
+@aserto.check(policyRoot="rebac", objType="resource-creator", objId="resource-creators", relationName="member").authorize
 def post_todo():
     todo = Todo.from_json(request.get_json())
     todo.ID = uuid4().hex
@@ -83,7 +77,7 @@ def post_todo():
 
 @app.route("/todos/<id>", methods=["PUT"])
 @requires_auth
-@aserto_rest.authorize
+@aserto.authorize
 def put_todo(id: str):
     todo = Todo.from_json(request.get_json())
     todo.ID = id
@@ -94,7 +88,7 @@ def put_todo(id: str):
 
 @app.route("/todos/<id>", methods=["DELETE"])
 @requires_auth
-@aserto_rest.authorize
+@aserto.authorize
 def remove_todo(id: str):
     store.delete(id)
     delete_todo(id)
@@ -105,7 +99,7 @@ def remove_todo(id: str):
 
 @app.route("/users/<userID>", methods=["GET"])
 @requires_auth
-@aserto_rest.authorize
+@aserto.authorize
 def get_user(userID):
     try:
         user = (

@@ -25,19 +25,16 @@ class AsertoMiddlewareOptions(TypedDict):
     identity_provider: IdentityMapper
 
 
-def load_options_from_environment(policy_root: str) -> AsertoMiddlewareOptions:
+def load_options_from_environment() -> AsertoMiddlewareOptions:
     authorizer_service_url = os.getenv(
         "ASERTO_AUTHORIZER_SERVICE_URL", DEFAULT_AUTHORIZER_URL
     )
 
-    if policy_root:
-        policy_path_root = policy_root
-    else:
-        policy_path_root = os.getenv("ASERTO_POLICY_ROOT", "")
-        if not policy_path_root:
-            raise EnvironmentError(
-                f"environment variable not set: ASERTO_POLICY_ROOT",
-            )
+    policy_path_root = os.getenv("ASERTO_POLICY_ROOT", "")
+    if not policy_path_root:
+        raise EnvironmentError(
+            f"environment variable not set: ASERTO_POLICY_ROOT",
+        )
 
     cert_file_path = (
         os.path.expandvars(os.getenv("ASERTO_AUTHORIZER_CERT_PATH", "")) or None
