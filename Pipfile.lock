@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "f358676a7c2607ca4236c8ed01810a3f5cce5cae7e4f6e0034fbe3d5be836bc6"
+            "sha256": "8afe9d50b2072a62e5185087a21e173b1771fc1a7120eaa2416e231eefca2ef1"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -108,12 +108,12 @@
         },
         "aserto": {
             "hashes": [
-                "sha256:afcef76a6ede0bcc678989e8758a9ddf49779070b7ced77148d81f71c95cf0b3",
-                "sha256:c5706dd45bbc1a6f87fe5bfb423ba7e19c332efa39e2e5395d3ad61d7f38d00b"
+                "sha256:2fed2a6948e042484ee75d5b8c2c0f06f8e23beca156f2c38fd104cea47fe6d7",
+                "sha256:701dc1d09eba5171e77e7b407c499889a0a9b45625c1684b5855e78489d6734d"
             ],
             "index": "pypi",
             "markers": "python_version >= '3.8' and python_version < '4.0'",
-            "version": "==0.30.2"
+            "version": "==0.30.3"
         },
         "aserto-authorizer": {
             "hashes": [
@@ -380,9 +380,13 @@
             "version": "==3.0.0"
         },
         "flask-aserto": {
-            "editable": true,
-            "file": "../aserto-python/packages/flask-aserto",
-            "markers": "python_version >= '3.8' and python_version < '4.0'"
+            "hashes": [
+                "sha256:9c9f3fdd9ecdda89940e61c49bad1f98b287fda87d5a4970378acc3c32f62c97",
+                "sha256:d0eaf8dbaa283f60e8e8cc54946d7cb3b0017c0aa4d68eb0692d7ae2f6e5c499"
+            ],
+            "index": "pypi",
+            "markers": "python_version >= '3.8' and python_version < '4.0'",
+            "version": "==0.30.3"
         },
         "flask-cors": {
             "hashes": [
