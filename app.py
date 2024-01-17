@@ -2,8 +2,7 @@ from uuid import uuid4
 
 from dotenv import load_dotenv
 from flask import Flask, g, jsonify, request
-from flask_aserto import AsertoMiddleware, AuthorizationError
-from aserto.client import ResourceContext
+from flask_aserto import AsertoMiddleware, AuthorizationError, ResourceContext
 from flask_cors import CORS
 
 from .db import Store, Todo

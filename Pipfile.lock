@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "8afe9d50b2072a62e5185087a21e173b1771fc1a7120eaa2416e231eefca2ef1"
+            "sha256": "28b5297d2226268fae1ebe3466f843eb3a54ac8afda34e71e9afc9aa123804a8"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -125,11 +125,11 @@
         },
         "aserto-directory": {
             "hashes": [
-                "sha256:5a09bcc4e26c3f39526fdb100ddec5426585d2207e058f01f305557f9fea25c2",
-                "sha256:dded89cb8e56d88523c1d8656f52be6ef1d7b42ff9dcdd27c90e6b1503c256b7"
+                "sha256:83c7ac6483140d6591e69660d67e9b207906f2a3a2e79e97cfed5a68bff04432",
+                "sha256:9f53fe6ae09f77b4ba0985b2bcb43038e95a33e19488f731e396fe5f8031f5fa"
             ],
             "markers": "python_version >= '3.8' and python_version < '4'",
-            "version": "==0.30.0"
+            "version": "==0.30.1"
         },
         "asgiref": {
             "hashes": [
@@ -381,12 +381,12 @@
         },
         "flask-aserto": {
             "hashes": [
-                "sha256:9c9f3fdd9ecdda89940e61c49bad1f98b287fda87d5a4970378acc3c32f62c97",
-                "sha256:d0eaf8dbaa283f60e8e8cc54946d7cb3b0017c0aa4d68eb0692d7ae2f6e5c499"
+                "sha256:0eb0d49175457afdf016af863868c8c24d4de8f0d1ff7588236e9f678b8a7d40",
+                "sha256:37eceed017ec0d7e7f050e9cae49ce06a91eeeb4ae0741a5356b95186ba31db5"
             ],
             "index": "pypi",
             "markers": "python_version >= '3.8' and python_version < '4.0'",
-            "version": "==0.30.3"
+            "version": "==0.30.4"
         },
         "flask-cors": {
             "hashes": [
@@ -1020,12 +1020,12 @@
         },
         "pyright": {
             "hashes": [
-                "sha256:00891361baf58698aa660d9374823d65782823ceb4a65515ff5dd159b0d4d2b1",
-                "sha256:bb8c80671cdaeb913142b49642a741959f3fcd728c99814631c2bde3a7864938"
+                "sha256:14dd31b594aa3ec464894f66b8a2d206ebef1501e52789eb88cf2a79b0907fbe",
+                "sha256:17ea09322f60080f82abc4e622e43d1a5ebaa407ba86963b15b2bc01cca256e0"
             ],
             "index": "pypi",
             "markers": "python_version >= '3.7'",
-            "version": "==1.1.345"
+            "version": "==1.1.347"
         },
         "setuptools": {
             "hashes": [

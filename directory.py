@@ -45,29 +45,23 @@ def user_from_identity(sub) -> Dict[str, Any]:
 
 
 def insert_todo(todo: Todo):
-    try:
-        ds().set_object(
-            object_type="resource", object_id=todo.ID, display_name=todo.Title, properties={}
-        )
+    ds().set_object(
+        object_type="resource", object_id=todo.ID, display_name=todo.Title, properties={}
+    )
 
-        ds().set_relation(
-            subject_id=todo.OwnerID,
-            subject_type="user",
-            object_id=todo.ID,
-            object_type="resource",
-            relation="owner",
-        )
-    except NotFoundError:
-        raise UserNotFoundError
+    ds().set_relation(
+        subject_id=todo.OwnerID,
+        subject_type="user",
+        object_id=todo.ID,
+        object_type="resource",
+        relation="owner",
+    )
 
 
 def delete_todo(todoId: str):
-    try:
-        ds().delete_object(
-            object_type="resource", object_id=todoId, with_relations=True
-        )
-    except:
-        print("Error")
+    ds().delete_object(
+        object_type="resource", object_id=todoId, with_relations=True
+    )
 
 
 def user_from_id(id) -> Dict[str, Any]:
