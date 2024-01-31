@@ -10,10 +10,10 @@ SCHEMA = "schema.sql"
 
 @dataclass
 class Todo:
-    ID: Optional[str] = None
+    ID: str = ""
     Title: str = ""
     Completed: bool = False
-    OwnerID: Optional[str] = None
+    OwnerID: str = ""
 
     @staticmethod
     def from_json(json_data: Any) -> Todo:

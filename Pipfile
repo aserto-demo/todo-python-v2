@@ -8,7 +8,7 @@ flask = {extras = ["async"], version = "~=3.0"}
 flask-cors = "~=4.0"
 python-dotenv = "~=1.0"
 requests = "~=2.31"
-flask-aserto = "~=0.30.1"
+flask-aserto = "~=0.30.5"
 pyjwt = "~=2.8"
 aserto = "~=0.30.0"
 python-jose = {extras = ["cryptography"], version = "~=3.3.0"}

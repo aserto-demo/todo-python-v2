@@ -1,16 +1,15 @@
 import os
-from typing import TypedDict
+from typing import TypedDict, Callable
 
 from dotenv import load_dotenv
 from flask import g
-from flask_aserto import AuthorizerOptions, Identity, IdentityMapper, IdentityType
+from flask_aserto import AuthorizerOptions, Identity, IdentityType, IdentityMapper
 
 load_dotenv()
 
 DEFAULT_AUTHORIZER_URL = "authorizer.prod.aserto.com:8443"
 
 __all__ = ["AsertoMiddlewareOptions", "load_options_from_environment"]
-
 
 class AccessTokenError(Exception):
     pass
@@ -25,8 +24,6 @@ class AsertoMiddlewareOptions(TypedDict):
 
 
 def load_options_from_environment() -> AsertoMiddlewareOptions:
-    
-
     authorizer_service_url = os.getenv(
         "ASERTO_AUTHORIZER_SERVICE_URL", DEFAULT_AUTHORIZER_URL
     )
@@ -60,6 +57,7 @@ def load_options_from_environment() -> AsertoMiddlewareOptions:
         policy_path_root=policy_path_root,
         identity_provider=identity_provider,
     )
+
 
 def identity_provider() -> Identity:
     identity = g.identity

@@ -5,6 +5,8 @@ from typing import Any, Dict
 from aserto.client.directory.v3 import Directory, NotFoundError, Object
 from google.protobuf.json_format import MessageToDict
 
+from .db import Todo
+
 DEFAULT_DIRECTORY_ADDRESS = "directory.prod.aserto.com:8443"
 
 
@@ -42,6 +44,26 @@ def user_from_identity(sub) -> Dict[str, Any]:
         raise UserNotFoundError
 
 
+def insert_todo(todo: Todo):
+    ds().set_object(
+        object_type="resource", object_id=todo.ID, display_name=todo.Title, properties={}
+    )
+
+    ds().set_relation(
+        subject_id=todo.OwnerID,
+        subject_type="user",
+        object_id=todo.ID,
+        object_type="resource",
+        relation="owner",
+    )
+
+
+def delete_todo(todoId: str):
+    ds().delete_object(
+        object_type="resource", object_id=todoId, with_relations=True
+    )
+
+
 def user_from_id(id) -> Dict[str, Any]:
     user = ds().get_object(object_type="user", object_id=id)
     return _get_object_dict(user)
@@ -49,4 +71,4 @@ def user_from_id(id) -> Dict[str, Any]:
 
 def _get_object_dict(object: Object) -> Dict[str, Any]:
     props = MessageToDict(object.properties)
-    return dict(key=object.id, name=object.display_name, **props)
+    return dict(id=object.id, name=object.display_name, **props)

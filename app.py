@@ -6,7 +6,13 @@ from flask_aserto import AsertoMiddleware, AuthorizationError, ResourceContext
 from flask_cors import CORS
 
 from .db import Store, Todo
-from .directory import UserNotFoundError, user_from_id, user_from_identity
+from .directory import (
+    UserNotFoundError,
+    delete_todo,
+    insert_todo,
+    user_from_id,
+    user_from_identity,
+)
 from .options import load_options_from_environment
 from .authn import requires_auth
 
@@ -23,8 +29,7 @@ def owner_id_resource_mapper() -> ResourceContext:
     resource = {}
 
     if request.view_args and "id" in request.view_args:
-        todo = store.get(request.view_args["id"])
-        resource["ownerID"] = todo.OwnerID
+        resource["object_id"] = request.view_args["id"]
 
     return resource
 
@@ -58,12 +63,13 @@ def get_todos():
 
 @app.route("/todos", methods=["POST"])
 @requires_auth
-@aserto.authorize
+@aserto.check(policyRoot="rebac", objType="resource-creator", objId="resource-creators", relationName="member").authorize
 def post_todo():
     todo = Todo.from_json(request.get_json())
     todo.ID = uuid4().hex
-    todo.OwnerID = user_from_identity(g.identity)["key"]
+    todo.OwnerID = user_from_identity(g.identity)["id"]
     store.insert(todo)
+    insert_todo(todo)
 
     return jsonify(todo)
 
@@ -84,6 +90,7 @@ def put_todo(id: str):
 @aserto.authorize
 def remove_todo(id: str):
     store.delete(id)
+    delete_todo(id)
     resp = jsonify(success=True)
     resp.status_code = 200
     return resp
