@@ -15,7 +15,8 @@ def ds() -> Directory:
     address = os.getenv("ASERTO_DIRECTORY_SERVICE_URL", DEFAULT_DIRECTORY_ADDRESS)
     cert = os.path.expandvars(
         os.getenv(
-            "ASERTO_DIRECTORY_GRPC_CERT_PATH", os.getenv("ASERTO_GRPC_CERT_PATH", "")
+            "ASERTO_DIRECTORY_GRPC_CA_CERT_PATH",
+            os.getenv("ASERTO_GRPC_CA_CERT_PATH", ""),
         )
     )
     api_key = os.getenv("ASERTO_DIRECTORY_API_KEY", "")

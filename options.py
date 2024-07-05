@@ -38,14 +38,12 @@ def load_options_from_environment() -> AsertoMiddlewareOptions:
     cert_file_path = (
         os.path.expandvars(
             os.getenv(
-                "ASERTO_AUTHORIZER_GRPC_CERT_PATH",
-                os.getenv("ASERTO_GRPC_CERT_PATH", ""),
+                "ASERTO_AUTHORIZER_GRPC_CA_CERT_PATH",
+                os.getenv("ASERTO_GRPC_CA_CERT_PATH", ""),
             )
         )
         or None
     )
-
-    print("ASERTO_AUTHORIZER_GRPC_CERT_PATH:", cert_file_path)
 
     tenant_id = os.getenv("ASERTO_TENANT_ID", None)
     authorizer_api_key = os.getenv("ASERTO_AUTHORIZER_API_KEY", "")

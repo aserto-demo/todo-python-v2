@@ -20,7 +20,11 @@ load_dotenv()
 
 app = Flask(__name__)
 
-CORS(app, headers=["Content-Type", "Authorization"])
+CORS(
+    app,
+    headers=("Content-Type", "Authorization"),
+    origins=["http://localhost:*", "https://todo.demo.aserto.com"],
+)
 
 store = Store()
 
