@@ -1,15 +1,16 @@
 import os
-from typing import TypedDict, Callable
+from typing import TypedDict
 
 from dotenv import load_dotenv
 from flask import g
-from flask_aserto import AuthorizerOptions, Identity, IdentityType, IdentityMapper
+from flask_aserto import AuthorizerOptions, Identity, IdentityMapper, IdentityType
 
 load_dotenv()
 
 DEFAULT_AUTHORIZER_URL = "authorizer.prod.aserto.com:8443"
 
 __all__ = ["AsertoMiddlewareOptions", "load_options_from_environment"]
+
 
 class AccessTokenError(Exception):
     pass
@@ -35,8 +36,16 @@ def load_options_from_environment() -> AsertoMiddlewareOptions:
         )
 
     cert_file_path = (
-        os.path.expandvars(os.getenv("ASERTO_AUTHORIZER_CERT_PATH", "")) or None
+        os.path.expandvars(
+            os.getenv(
+                "ASERTO_AUTHORIZER_GRPC_CERT_PATH",
+                os.getenv("ASERTO_GRPC_CERT_PATH", ""),
+            )
+        )
+        or None
     )
+
+    print("ASERTO_AUTHORIZER_GRPC_CERT_PATH:", cert_file_path)
 
     tenant_id = os.getenv("ASERTO_TENANT_ID", None)
     authorizer_api_key = os.getenv("ASERTO_AUTHORIZER_API_KEY", "")
