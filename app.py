@@ -13,6 +13,7 @@ from .directory import (
     insert_todo,
     user_from_id,
     user_from_identity,
+    is_legacy_identity,
 )
 from .options import load_options_from_environment
 
@@ -56,6 +57,7 @@ def connection_error(e):
     app.logger.error("connection error: %s", e)
     return "Connection Error", 500
 
+is_legacy = is_legacy_identity()
 
 @app.route("/todos", methods=["GET"])
 @requires_auth
