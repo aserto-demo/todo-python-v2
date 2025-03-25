@@ -1,8 +1,7 @@
-from __future__ import annotations
+from dataclasses import dataclass
+from typing import Any, Sequence
 
 import sqlite3
-from dataclasses import dataclass
-from typing import Any, Optional, Sequence
 
 DATABASE = "todo.db"
 SCHEMA = "schema.sql"
@@ -16,14 +15,14 @@ class Todo:
     OwnerID: str = ""
 
     @staticmethod
-    def from_json(json_data: Any) -> Todo:
+    def from_json(json_data: Any) -> "Todo":
         return Todo(**json_data)
 
 
 class Store:
     def __init__(self, db_file: str = DATABASE, schema_file: str = SCHEMA):
         self._db_file = db_file
-        with self._conn as conn, open(schema_file) as f:
+        with self._conn as conn, open(schema_file, encoding="utf-8") as f:
             conn.executescript(f.read())
 
     @property

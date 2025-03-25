@@ -32,7 +32,7 @@ def load_options_from_environment() -> AsertoMiddlewareOptions:
     policy_path_root = os.getenv("ASERTO_POLICY_ROOT", "")
     if not policy_path_root:
         raise EnvironmentError(
-            f"environment variable not set: ASERTO_POLICY_ROOT",
+            "environment variable not set: ASERTO_POLICY_ROOT",
         )
 
     cert_file_path = (

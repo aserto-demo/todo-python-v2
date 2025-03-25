@@ -8,18 +8,20 @@ flask = {extras = ["async"], version = "~=3.0"}
 flask-cors = "~=4.0"
 python-dotenv = "~=1.0"
 requests = "~=2.31"
-flask-aserto = "~=0.31.1"
 pyjwt = "~=2.8"
-aserto = "~=0.31.2"
 python-jose = {extras = ["cryptography"], version = "~=3.3.0"}
+flask-aserto = "~=0.32.0"
 
 [dev-packages]
-black = "~=23.0"
+black = "~=25.1.0"
+isort = "~=6.0.1"
 pyright = ">=1.1.337"
-isort = "~=5.10"
+types-python-jose = "*"
+types-requests = "*"
+types-flask-cors = "*"
 
 [requires]
-python_version = ">=3.8"
+python_version = "3.13"
 
 [pipenv]
 allow_prereleases = true
