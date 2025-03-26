@@ -5,16 +5,16 @@ from flask import Flask, g, jsonify, request
 from flask_aserto import AsertoMiddleware, AuthorizationError, ResourceContext
 from flask_cors import CORS
 
-from .authn import requires_auth
-from .db import Store, Todo
-from .directory import (
+from authn import requires_auth
+from db import Store, Todo
+from directory import (
     UserNotFoundError,
     delete_todo,
     insert_todo,
     user_from_id,
     user_from_identity,
 )
-from .options import load_options_from_environment
+from options import load_options_from_environment
 
 load_dotenv()
 
@@ -68,10 +68,10 @@ def get_todos():
 @app.route("/todos", methods=["POST"])
 @requires_auth
 @aserto.check(
-    policyRoot="rebac",
-    objType="resource-creator",
-    objId="resource-creators",
-    relationName="member",
+    policy_root="rebac",
+    object_type="resource-creator",
+    object_id="resource-creators",
+    relation="member",
 ).authorize
 def post_todo():
     todo = Todo.from_json(request.get_json())
@@ -119,7 +119,7 @@ def get_user(userID):
 
 
 @app.teardown_appcontext
-def close_connection(exception):
+def close_connection(_):
     db = getattr(g, "_database", None)
     if db is not None:
         db.close()
